@@ -1,15 +1,18 @@
-# Bruxos de Midgard — O Caminho das Runas
+# Bruxos de Midgard — V0.1.2
 
-## V0.1.1 — Primeira reforma visual e de controles
+Revisão jogável com foco em visual e conteúdo.
 
-Incluído nesta versão:
-- rotação automática entre as duas orientações de paisagem;
-- joystick analógico virtual com movimento diagonal;
-- botão contextual de interação;
-- nova tela inicial baseada no conceito visual aprovado;
-- novo ícone Pedra Rúnica (opção 9 aprovada);
-- Skeldal reformulada com identidade nórdica, caminhos, rio, construções e iluminação;
-- HUD mais limpa;
-- manutenção de Nova Jornada, Continuar, criação do aprendiz, origem, familiar, professor e salvamento local.
+## Novidades
+- seleção de seis aprendizes com arte própria e sem vínculo prévio com reino;
+- origem escolhida separadamente;
+- Skeldal e ruínas com nova direção visual;
+- joystick analógico preservado;
+- primeiro duelo tutorial com terreno, mana, criatura e magia;
+- primeira missão nas ruínas e introdução da runa desconhecida;
+- recompensa de carta após o duelo;
+- opções de música e volume;
+- trilha ambiente procedural original criada especificamente para este protótipo;
+- orientação paisagem com rotação para os dois lados;
+- novo arquivo de save separado da V0.1.1.
 
-Esta é uma versão de teste. O sistema de duelos por cartas está planejado para V0.2.
+A V0.1.2 é um protótipo de jogabilidade. O sistema completo de grimório/deck e combates será expandido nas versões seguintes.
