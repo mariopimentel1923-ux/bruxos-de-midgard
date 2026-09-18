@@ -1,22 +1,15 @@
 # Bruxos de Midgard — O Caminho das Runas
 
-## V0.1.0 — Primeiro Passo
-Protótipo jogável do RPG 2D nórdico.
+## V0.1.1 — Primeira reforma visual e de controles
 
-### Incluído
-- Menu inicial
-- Nova Jornada / Continuar
-- Nome do aprendiz
-- 6 perfis iniciais
-- 4 origens: Fogo, Água, Ferro e Terra
-- 4 familiares: Lobo, Corvo, Raposa e Coruja
-- Skeldal em versão protótipo
-- Movimento por teclado e controles de toque
-- Familiar seguindo o jogador
-- Mestre Halvar e primeiro diálogo
-- Missão inicial
-- Salvamento local
-- Projeto preparado para Android
+Incluído nesta versão:
+- rotação automática entre as duas orientações de paisagem;
+- joystick analógico virtual com movimento diagonal;
+- botão contextual de interação;
+- nova tela inicial baseada no conceito visual aprovado;
+- novo ícone Pedra Rúnica (opção 9 aprovada);
+- Skeldal reformulada com identidade nórdica, caminhos, rio, construções e iluminação;
+- HUD mais limpa;
+- manutenção de Nova Jornada, Continuar, criação do aprendiz, origem, familiar, professor e salvamento local.
 
-### Próximo marco — V0.2
-Primeiro grimório e sistema de duelos de cartas com terrenos, mana, criaturas e magias.
+Esta é uma versão de teste. O sistema de duelos por cartas está planejado para V0.2.
