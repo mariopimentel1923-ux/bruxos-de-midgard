@@ -1,12 +1,21 @@
-# Bruxos de Midgard — V0.1.2 Menu Test
+# Bruxos de Midgard — V0.1.2 criação estável
 
-Segundo estágio do diagnóstico.
+Terceiro estágio de reconstrução após o diagnóstico Android.
 
-Inclui somente:
-- imagem de fundo;
-- título e subtítulo;
-- quatro botões funcionais;
-- painéis simples de Opções e Créditos;
-- script mínimo de interface.
+Inclui:
+- menu aprovado com a maga e o lobo;
+- nome do jogador;
+- os 6 aprendizes já aprovados (3 homens + 3 mulheres);
+- exatamente 4 origens: Fogo, Água, Ferro e Terra;
+- exatamente 4 familiares: Lobo, Corvo, Raposa e Coruja;
+- confirmação das escolhas.
 
-Ainda não inclui música, save, criação de personagem, mundo, joystick, missão ou batalha.
+Ainda propositalmente fora:
+- música;
+- save;
+- Skeldal;
+- joystick;
+- missão;
+- duelo.
+
+Esses módulos serão reativados um a um após esta etapa ser validada no aparelho.
