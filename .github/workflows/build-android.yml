@@ -6,6 +6,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -43,3 +46,12 @@ jobs:
           name: Bruxos-de-Midgard-APK
           path: build/bruxos-de-midgard.apk
           if-no-files-found: error
+
+      - name: Criar Release de teste
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: teste-${{ github.run_number }}
+          name: Bruxos de Midgard - Teste ${{ github.run_number }}
+          prerelease: true
+          files: build/bruxos-de-midgard.apk
