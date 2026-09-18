@@ -1,4 +1,4 @@
-; Bruxos de Midgard - V0.1.2
+; Bruxos de Midgard - V0.1.1
 config_version=5
 
 [application]
@@ -18,7 +18,7 @@ window/handheld/orientation=4
 [rendering]
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-environment/defaults/default_clear_color=Color(0.01,0.015,0.02,1)
+environment/defaults/default_clear_color=Color(0.018, 0.027, 0.035, 1)
 textures/vram_compression/import_etc2_astc=true
 
 [input]
