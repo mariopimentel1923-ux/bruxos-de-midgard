@@ -1,7 +1,7 @@
 extends Node2D
 
 const SAVE_PATH := "user://savegame_v012.json"
-const VERSION := "0.1.2"
+const VERSION := "0.1.2-fix1"
 const JOYSTICK := preload("res://scripts/virtual_joystick.gd")
 const APPRENTICES := ["Aldar","Eira","Kellen","Nya","Torin","Siv"]
 const APPRENTICE_FILES := ["aldar","eira","kellen","nya","torin","siv"]
@@ -42,8 +42,6 @@ var familiars=[
 ]
 
 func _ready():
-    if DisplayServer.has_feature(DisplayServer.FEATURE_ORIENTATION):
-        DisplayServer.screen_set_orientation(DisplayServer.SCREEN_SENSOR_LANDSCAPE)
     ui=CanvasLayer.new()
     add_child(ui)
     setup_music()
@@ -53,9 +51,58 @@ func setup_music():
     music=AudioStreamPlayer.new()
     music.stream=load("res://assets/skeldal_ambient_original.wav")
     music.volume_db=linear_to_db(music_volume)
-    music.finished.connect(func(): if music_on: music.play())
+    music.finished.connect(_on_music_finished)
     add_child(music)
     music.play()
+
+
+func _on_music_finished():
+    if music_on:
+        music.play()
+
+func _on_music_toggled(value:bool):
+    music_on=value
+    if music_on:
+        if not music.playing:
+            music.play()
+    else:
+        music.stop()
+
+func _on_volume_changed(value:float):
+    music_volume=value
+    music.volume_db=linear_to_db(max(value,0.001))
+
+func show_credits():
+    popup("Créditos","Bruxos de Midgard — V0.1.2\nProtótipo independente em desenvolvimento.\nTrilha desta versão: composição procedural original.")
+
+func confirm_name(edit:LineEdit):
+    var chosen=edit.text.strip_edges()
+    save_data.name=chosen if chosen!="" else "Eirik"
+    show_avatar()
+
+func select_avatar(idx:int):
+    save_data.avatar=idx
+    show_avatar_detail(idx)
+
+func select_origin(origin_name:String):
+    save_data.origin=origin_name
+    show_familiar()
+
+func select_familiar(familiar_name:String):
+    save_data.familiar=familiar_name
+    show_confirm()
+
+func begin_journey():
+    save_data.stage=0
+    save_game()
+    start_world()
+
+func _on_joystick_direction(value:Vector2):
+    touch_dir=value
+
+func save_and_menu():
+    save_game()
+    show_menu()
 
 func clear_scene():
     for c in get_children():
@@ -111,8 +158,8 @@ func show_menu():
     var cont=button("CONTINUAR",load_game,Vector2(390,58)); cont.disabled=not FileAccess.file_exists(SAVE_PATH); box.add_child(cont)
     box.add_child(button("NOVA JORNADA",show_name,Vector2(390,58)))
     box.add_child(button("OPÇÕES",show_options,Vector2(390,58)))
-    box.add_child(button("CRÉDITOS",func(): popup("Créditos","Bruxos de Midgard — V0.1.2\nProtótipo independente em desenvolvimento.\nTrilha desta versão: composição procedural original."),Vector2(390,58)))
-    var v=label("V0.1.2",16); v.position=Vector2(1195,18); ui.add_child(v)
+    box.add_child(button("CRÉDITOS",show_credits,Vector2(390,58)))
+    var v=label("V0.1.2 FIX 1",16); v.position=Vector2(1195,18); ui.add_child(v)
 
 func show_options():
     clear_scene(); full_bg("res://assets/menu_bg_v012.jpg",0.55)
@@ -120,9 +167,9 @@ func show_options():
     var vb=VBoxContainer.new(); vb.add_theme_constant_override("separation",18); p.add_child(vb)
     vb.add_child(label("OPÇÕES",38,true))
     var toggle=CheckButton.new(); toggle.text="Música"; toggle.button_pressed=music_on; toggle.add_theme_font_size_override("font_size",22)
-    toggle.toggled.connect(func(v): music_on=v; if v: music.play(); else: music.stop()); vb.add_child(toggle)
+    toggle.toggled.connect(_on_music_toggled); vb.add_child(toggle)
     var vol=HSlider.new(); vol.min_value=0; vol.max_value=1; vol.step=0.05; vol.value=music_volume
-    vol.value_changed.connect(func(v): music_volume=v; music.volume_db=linear_to_db(max(v,0.001))); vb.add_child(label("Volume",18)); vb.add_child(vol)
+    vol.value_changed.connect(_on_volume_changed); vb.add_child(label("Volume",18)); vb.add_child(vol)
     vb.add_child(label("Controles: joystick analógico à esquerda e Interagir à direita.\nOrientação: paisagem com rotação para os dois lados.",17))
     vb.add_child(button("VOLTAR",show_menu,Vector2(250,50)))
 
@@ -132,7 +179,7 @@ func show_name():
     var vb=VBoxContainer.new(); vb.add_theme_constant_override("separation",16); p.add_child(vb)
     vb.add_child(label("SUA JORNADA COMEÇA",34,true)); vb.add_child(label("Como seu aprendiz será chamado?",20,true))
     var e=LineEdit.new(); e.placeholder_text="Nome do aprendiz"; e.max_length=18; e.custom_minimum_size=Vector2(470,55); e.add_theme_font_size_override("font_size",22); vb.add_child(e)
-    vb.add_child(button("CONTINUAR",func(): save_data.name=e.text.strip_edges() if e.text.strip_edges()!="" else "Eirik"; show_avatar(),Vector2(470,55)))
+    var next_btn=button("CONTINUAR",Callable(self,"confirm_name").bind(e),Vector2(470,55)); vb.add_child(next_btn)
     vb.add_child(button("VOLTAR",show_menu,Vector2(220,48)))
 
 func show_avatar():
@@ -145,7 +192,7 @@ func show_avatar():
         card.texture_normal=load("res://assets/apprentice_%s.jpg" % APPRENTICE_FILES[i])
         card.ignore_texture_size=true; card.stretch_mode=TextureButton.STRETCH_KEEP_ASPECT_COVERED
         card.position=Vector2(28+i*205,112); card.size=Vector2(190,395)
-        card.pressed.connect(func(idx=i): save_data.avatar=idx; show_avatar_detail(idx))
+        card.pressed.connect(Callable(self,"select_avatar").bind(i))
         ui.add_child(card)
         var n=label(APPRENTICES[i],18,true); n.position=Vector2(28+i*205,512); n.size=Vector2(190,28); ui.add_child(n)
     var steps=label("1  PERSONAGEM        2  ORIGEM        3  FAMILIAR        4  CONFIRMAÇÃO",17,true); steps.position=Vector2(210,570); steps.size=Vector2(860,35); ui.add_child(steps)
@@ -165,7 +212,7 @@ func show_origin():
     var vb=VBoxContainer.new(); vb.add_theme_constant_override("separation",12); p.add_child(vb)
     vb.add_child(label("ESCOLHA SUA ORIGEM",34,true)); vb.add_child(label("Agora sua roupa e seus primeiros ensinamentos ganham a identidade do reino.",18,true))
     for o in origins:
-        var b=button("%s — %s" % [o.name,o.desc],func(n=o.name): save_data.origin=n; show_familiar(),Vector2(900,78)); vb.add_child(b)
+        var b=button("%s — %s" % [o.name,o.desc],Callable(self,"select_origin").bind(o.name),Vector2(900,78)); vb.add_child(b)
     vb.add_child(button("VOLTAR",show_avatar,Vector2(200,48)))
 
 func show_familiar():
@@ -174,7 +221,7 @@ func show_familiar():
     var vb=VBoxContainer.new(); vb.add_theme_constant_override("separation",12); p.add_child(vb)
     vb.add_child(label("ESCOLHA SEU FAMILIAR",34,true))
     for f in familiars:
-        vb.add_child(button("%s — %s" % [f.name,f.desc],func(n=f.name): save_data.familiar=n; show_confirm(),Vector2(900,82)))
+        vb.add_child(button("%s — %s" % [f.name,f.desc],Callable(self,"select_familiar").bind(f.name),Vector2(900,82)))
     vb.add_child(button("VOLTAR",show_origin,Vector2(200,48)))
 
 func show_confirm():
@@ -184,7 +231,7 @@ func show_confirm():
     vb.add_child(label("PRONTO PARA MIDGARD?",36,true))
     vb.add_child(label("%s\nAparência: %s\nOrigem: %s\nFamiliar: %s" % [save_data.name,APPRENTICES[int(save_data.avatar)],save_data.origin,save_data.familiar],22,true))
     vb.add_child(label("Sua origem é seu primeiro caminho — não seu destino.",18,true))
-    vb.add_child(button("COMEÇAR JORNADA",func(): save_data.stage=0; save_game(); start_world(),Vector2(470,60)))
+    vb.add_child(button("COMEÇAR JORNADA",begin_journey,Vector2(470,60)))
     vb.add_child(button("VOLTAR",show_familiar,Vector2(220,48)))
 
 func start_world():
@@ -218,9 +265,9 @@ func build_hud():
     var vb=VBoxContainer.new(); p.add_child(vb)
     vb.add_child(label("%s  •  %s  •  %s" % [save_data.name,save_data.origin,save_data.familiar],18))
     vb.add_child(label("MISSÃO: "+save_data.quest,15))
-    var joy=JOYSTICK.new(); joy.position=Vector2(35,515); joy.size=Vector2(168,168); joy.direction_changed.connect(func(v): touch_dir=v); ui.add_child(joy)
+    var joy=JOYSTICK.new(); joy.position=Vector2(35,515); joy.size=Vector2(168,168); joy.direction_changed.connect(_on_joystick_direction); ui.add_child(joy)
     var inter=button("INTERAGIR",interact,Vector2(150,95)); inter.position=Vector2(1085,580); ui.add_child(inter)
-    var menu=button("☰",func(): save_game(); show_menu(),Vector2(58,52)); menu.position=Vector2(1200,18); ui.add_child(menu)
+    var menu=button("☰",save_and_menu,Vector2(58,52)); menu.position=Vector2(1200,18); ui.add_child(menu)
 
 func _process(delta):
     if screen!="world" or not is_instance_valid(player): return
@@ -238,12 +285,12 @@ func interact():
             professor_dialogue()
         else: popup("Dica","Procure Mestre Halvar, marcado com ! perto do centro de Skeldal.")
     elif save_data.stage==1:
-        popup("Rumo às ruínas","Halvar abriu o caminho para as ruínas ao norte.",func(): start_ruins())
+        popup("Rumo às ruínas","Halvar abriu o caminho para as ruínas ao norte.",start_ruins)
     else:
         popup("Skeldal","Explore a vila. A próxima parte da história continuará em uma futura versão.")
 
 func professor_dialogue():
-    popup("Mestre Halvar","%s, andar por Midgard é fácil. Difícil é aprender a escolher.\n\nAntes das ruínas, você precisa aprender a defender seu grimório." % save_data.name,func(): start_battle())
+    popup("Mestre Halvar","%s, andar por Midgard é fácil. Difícil é aprender a escolher.\n\nAntes das ruínas, você precisa aprender a defender seu grimório." % save_data.name,start_battle)
 
 func start_battle():
     screen="battle"; clear_scene(); full_bg("res://assets/battle_v012.jpg",0.48)
@@ -264,7 +311,7 @@ func build_battle_hand():
         ["DEFESA\nRuna de Proteção","Recupere 2 • custo 1",3]
     ]
     for i in 4:
-        var b=button(cards[i][0]+"\n"+cards[i][1],func(idx=i): play_card(idx),Vector2(245,150))
+        var b=button(cards[i][0]+"\n"+cards[i][1],Callable(self,"play_card").bind(i),Vector2(245,150))
         b.name="Card%d"%i; b.position=Vector2(115+i*265,485); ui.add_child(b)
     var pass=button("PASSAR TURNO",pass_turn,Vector2(210,55)); pass.name="CardPass"; pass.position=Vector2(1030,400); ui.add_child(pass)
     update_battle()
@@ -303,7 +350,7 @@ func update_battle():
 
 func battle_win():
     save_data.tutorial_won=true; save_data.stage=1; save_data.quest="Investigue as ruínas ao norte"; save_game()
-    popup("Vitória!","Você venceu seu primeiro duelo.\n\nRecompensa: Fragmento de Grimório — Faísca Rúnica.\nHalvar agora permite que você investigue as ruínas.",func(): start_ruins())
+    popup("Vitória!","Você venceu seu primeiro duelo.\n\nRecompensa: Fragmento de Grimório — Faísca Rúnica.\nHalvar agora permite que você investigue as ruínas.",start_ruins)
 
 func start_ruins():
     screen="ruins"; clear_scene(); full_bg("res://assets/ruins_v012.jpg",0.18)
@@ -315,7 +362,7 @@ func start_ruins():
 
 func find_rune():
     save_data.rune_found=true; save_data.stage=2; save_data.quest="Leve o fragmento desconhecido a Halvar"; save_game()
-    popup("Um sinal nas ruínas","A pedra pulsa sob seus dedos.\n\nFogo, Água, Ferro, Terra... mas este símbolo não pertence a nenhum dos quatro caminhos.\n\nUma quinta runa?",func(): start_world())
+    popup("Um sinal nas ruínas","A pedra pulsa sob seus dedos.\n\nFogo, Água, Ferro, Terra... mas este símbolo não pertence a nenhum dos quatro caminhos.\n\nUma quinta runa?",start_world)
 
 func popup(title:String,body:String,next:=Callable()):
     var p=AcceptDialog.new(); p.title=title; p.dialog_text=body; p.min_size=Vector2i(650,300); ui.add_child(p)
