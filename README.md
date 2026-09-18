@@ -1,13 +1,12 @@
-# Bruxos de Midgard — diagnóstico V0.1.2
+# Bruxos de Midgard — V0.1.2 Menu Test
 
-Build de isolamento baseado na V0.1.1 que já abriu no aparelho.
+Segundo estágio do diagnóstico.
 
-Este teste inicia uma cena totalmente estática:
-- sem `main.gd`;
-- sem imagens;
-- sem música;
-- sem joystick;
-- sem save;
-- sem carregamento de recursos externos.
+Inclui somente:
+- imagem de fundo;
+- título e subtítulo;
+- quatro botões funcionais;
+- painéis simples de Opções e Créditos;
+- script mínimo de interface.
 
-Objetivo: confirmar separadamente cena principal + renderização Android.
+Ainda não inclui música, save, criação de personagem, mundo, joystick, missão ou batalha.
