@@ -1,23 +1,16 @@
-# Bruxos de Midgard — V0.1.3 JOGÁVEL
+# Bruxos de Midgard V0.2.0
 
-Reconstruída sobre a base Android que já foi validada no aparelho.
+Reconstrução: as telas de exploração e batalha não são screenshots.
 
-## Criação
-- Tela de nome separada.
-- Os seis aprendizes aprovados: Aldar, Eira, Kellen, Nya, Torin e Siv.
-- Quatro origens: Fogo, Água, Ferro e Terra.
-- Quatro familiares: Lobo, Corvo, Raposa e Coruja.
-- Os cards são usados como telas completas; não há recortes individuais deformados.
-
-## Jogo
-- Skeldal.
-- Movimento com joystick analógico.
-- Mestre Halvar e missão.
-- Exploração.
-- Coleta de Erva Rúnica.
-- Ruínas e quinta runa.
-- Primeiro duelo jogável contra Lobo Sombrio.
-- Mana e quatro ações/cartas de protótipo.
-- Mapa.
-
-Áudio e save ficam para a etapa seguinte, depois da validação Android desta versão.
+- Eira — Fogo
+- Kellen — Água
+- Nya — Ferro
+- Torin — Terra
+- Familiar descoberto durante a primeira missão
+- Skeldal com movimento contínuo e joystick
+- Halvar, objetivo e diálogos
+- Familiar segue o jogador
+- Campo de batalha dinâmico
+- Indicador SEU TURNO / TURNO DO OPONENTE
+- Fases: Início, Compra, Preparação, Combate, 2ª Preparação, Fim
+- Vida, mana, mão, campo, dano flutuante e ação automática do adversário
