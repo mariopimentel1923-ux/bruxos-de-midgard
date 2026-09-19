@@ -1,8 +1,6 @@
 [gd_scene load_steps=2 format=3]
-
-[ext_resource type="Script" path="res://scripts/V012_FLUXO_NOVO.gd" id="1"]
-
-[node name="MainV012Clean" type="Control"]
+[ext_resource type="Script" path="res://scripts/midgard_v013.gd" id="1"]
+[node name="Main" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
