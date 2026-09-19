@@ -1,3 +1,8 @@
-# Bruxos de Midgard V0.1.2 — fluxo visual
+# BRUXOS DE MIDGARD — V0.1.2 CLEAN
 
-Tela própria para nome, seleção visual de personagem, quatro origens, quatro familiares e confirmação.
+Pacote limpo de verificação.
+
+O `main.tscn` carrega exclusivamente:
+`res://scripts/V012_FLUXO_NOVO.gd`
+
+Novos assets usam prefixo `V012_` para serem facilmente identificados no GitHub.
